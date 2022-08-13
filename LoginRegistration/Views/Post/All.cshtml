@@ -1,0 +1,69 @@
+@model List<Post>
+<h3>Welcome @Context.Session.GetString("Name"), UUID: @Context.Session.GetInt32("UUID")</h3>
+
+<h1>Come view our posts!!</h1>
+
+
+@* 
+    You can use a partial that requires a different ViewModel
+        by creating an instance of that model
+        and passing it into your partial under the tag model="" 
+*@
+
+@{
+    Post newPost = new Post();
+    @* newPost.Topic = "topic created in cshtml file"; *@
+}
+<partial name="_New" model="@newPost"></partial>
+
+@foreach (Post post in Model)
+{
+    <div class="card shadow rounded mx-auto w-75 mb-3">
+        <h4 class="card-title text-center bg-dark text-light py-2 rounded-top">
+        @post.Topic
+        </h4>
+
+        <div class="card-body">
+        <p class="card-text">@post.Body</p>
+        <small class="text-muted"> Submitted on: @post.CreatedAt </small>
+        </div>
+
+        @if(post.Author != null)
+        {
+            <p>@post.Author.FullName()</p>
+            @* Code below only runs when you use .ThenInclude for your author to
+            also include their created posts. (BUT THIS IS A BAD USE CASE)
+            <span>has written @post.Author.CreatedPosts.Count posts</span> *@
+        }
+
+        @if (post.ImgUrl != null && post.ImgUrl != "") {
+            <img src="@post.ImgUrl" alt="related to post." class="card-img-bottom" />
+        }
+        <a 
+            asp-action="ViewPost"
+            asp-route-postId="@post.PostId"
+        >View Details</a>
+
+        <a href="/posts/@post.PostId" >View But w/ href</a>
+
+        @{
+            bool alreadyLiked = post.Likes.Any(like => like.UserId == Context.Session.GetInt32("UUID"));
+        }
+
+        <div class="card-footer text-center">
+            <form asp-controller="Post" asp-action="Like" asp-route-pId="@post.PostId" method="POST">
+                <button>
+                    @if (alreadyLiked)
+                    {
+                        <span>Unlike</span>
+                    }
+                    else
+                    {
+                        <span>Like</span>
+                    }
+                </button>
+            </form>
+            <span>Likes: @post.Likes.Count</span>
+        </div>
+    </div>
+}

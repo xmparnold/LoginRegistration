@@ -1,0 +1,34 @@
+@model Post
+
+<h1><label asp-for="Topic"></label>:  @Model.Topic</h1>
+@if(Model.Author != null)
+{
+<h3>Written by: @Model.Author.FullName()</h3>
+}
+<h3>@Model.Body</h3>
+<img src="@Model.ImgUrl" alt="related to post." class="card-img-bottom" />
+
+<h3>Users who like this post:</h3>
+@foreach (UserPostLike like in Model.Likes)
+{
+    if(like.User != null)
+    {
+        <p>@like.User.FullName()</p>
+    }
+}
+
+<br><br>
+
+@if (@Model.UserId == Context.Session.GetInt32("UUID"))
+{
+    <a href="/posts/@Model.PostId/edit">Edit this post</a>
+
+    <form
+        asp-controller="Post"
+        asp-action="Delete"
+        asp-route-deletedPostId="@Model.PostId"
+        method="POST"
+        >
+        <button>Delete</button>
+    </form>
+}

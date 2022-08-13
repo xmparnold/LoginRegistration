@@ -1,0 +1,36 @@
+@model User
+
+<h1>Profile for: @Model.FullName()</h1>
+
+<h3>Posts:</h3>
+<ul>
+    @foreach (Post post in Model.CreatedPosts)
+    {
+        <div class="card shadow rounded mx-auto w-75 mb-3">
+        <h4 class="card-title text-center bg-dark text-light py-2 rounded-top">
+        @post.Topic
+        </h4>
+
+        <div class="card-body">
+        <p class="card-text">@post.Body</p>
+        <small class="text-muted"> Submitted on: @post.CreatedAt </small>
+        </div>
+
+        @if(post.Author != null)
+        {
+            <p>@post.Author.FullName()</p>
+        }
+
+        @if (post.ImgUrl != null && post.ImgUrl != "") {
+            <img src="@post.ImgUrl" alt="related to post." class="card-img-bottom" />
+        }
+        <a 
+            asp-action="ViewPost"
+            asp-route-postId="@post.PostId"
+        >View Details</a>
+
+        <a href="/posts/@post.PostId" >View But w/ href</a>
+
+        </div>
+    }
+</ul>
