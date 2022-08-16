@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using LoginRegistration.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace EntityFrameworkLecture.Controllers;
+namespace LoginRegistration.Controllers;
     
 public class PostController : Controller
 {
